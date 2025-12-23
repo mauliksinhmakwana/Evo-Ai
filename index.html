@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
-        /* design variables matching your site */
+        /* CSS remains the same as previous for design consistency */
         :root {
             --primary-bg: #0a0a0a;
             --secondary-bg: #1a1a1a;
@@ -24,29 +24,29 @@
             --glass-blur: blur(12px);
         }
 
-        body { font-family: 'Poppins', sans-serif; background-color: var(--primary-bg); color: var(--text-color); margin: 0; display: flex; flex-direction: column; min-height: 100vh; overflow: hidden; }
-        
+        body { font-family: 'Poppins', sans-serif; background-color: var(--primary-bg); color: var(--text-color); margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
         .wave-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.03; background: radial-gradient(circle at 50% 50%, #ffffff, transparent 70%); }
 
-        /* header matching your original code */
         .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background-color: rgba(16, 16, 16, 0.95); backdrop-filter: var(--glass-blur); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; }
+        .header-logo { width: 40px; height: 40px; border-radius: 50%; margin-right: 15px; padding: 3px; background-color: var(--primary-bg); }
+        .header-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
         .header-name { font-size: 1.4em; font-weight: 700; color: var(--heading-color); }
         .nav-link { color: var(--text-color); text-decoration: none; font-weight: 600; font-size: 0.9em; padding: 8px 20px; border-radius: 50px; background: var(--glass-bg); border: var(--glass-border); transition: 0.3s; margin-left: 10px; }
-
-        /* Main AI Interface */
-        .main-content { flex-grow: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .ai-container { width: 100%; max-width: 800px; height: 80vh; background: var(--glass-bg); border: var(--glass-border); border-radius: 24px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         
-        .chat-header { padding: 20px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; }
-        .chat-messages { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 5%; width: 100%; max-width: 1000px; margin: 0 auto; }
+        .ai-container { width: 100%; height: 70vh; background: var(--glass-bg); border: var(--glass-border); border-radius: 24px; display: flex; flex-direction: column; overflow: hidden; backdrop-filter: var(--glass-blur); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         
-        .message { max-width: 85%; padding: 12px 18px; border-radius: 18px; font-size: 0.95em; line-height: 1.5; }
+        .chat-header { padding: 20px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px; }
+        #chat-output { flex-grow: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+        .message { max-width: 80%; padding: 12px 18px; border-radius: 18px; line-height: 1.5; font-size: 0.95em; word-wrap: break-word; }
         .user-msg { align-self: flex-end; background: #fff; color: #000; }
-        .bot-msg { align-self: flex-start; background: var(--secondary-bg); border: 1px solid var(--border-color); color: #fff; }
+        .bot-msg { align-self: flex-start; background: var(--glass-bg); border: 1px solid var(--border-color); }
 
-        .input-area { padding: 20px; display: flex; gap: 10px; background: rgba(0,0,0,0.2); border-top: 1px solid var(--border-color); }
-        input { flex-grow: 1; background: #000; border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; color: #fff; outline: none; }
-        button { background: var(--accent-gradient); border: none; width: 50px; border-radius: 12px; cursor: pointer; color: #000; }
+        .input-area { padding: 20px; display: flex; gap: 12px; border-top: 1px solid var(--border-color); }
+        #user-input { flex-grow: 1; background: #000; border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 20px; color: #fff; outline: none; }
+        #send-btn { background: var(--accent-gradient); border: none; width: 50px; height: 50px; border-radius: 12px; color: #000; cursor: pointer; }
+
+        .footer { background-color: var(--secondary-bg); padding: 30px 5%; border-top: 1px solid var(--border-color); text-align: center; }
     </style>
 </head>
 <body>
@@ -54,8 +54,11 @@
     <div class="wave-background"></div>
 
     <header class="header">
-        <span class="header-name">MAKWANA MAULIK</span>
-        <nav>
+        <div class="header-left">
+            <div class="header-logo"><img src="/Mauliksinh-Makwana/logo.png" alt="Logo"></div>
+            <span class="header-name">MAKWANA MAULIK</span>
+        </div>
+        <nav class="header-nav">
             <a href="index.html" class="nav-link">Home</a>
             <a href="#" class="nav-link">AI Lab</a>
         </nav>
@@ -64,74 +67,89 @@
     <main class="main-content">
         <div class="ai-container">
             <div class="chat-header">
-                <i class="fas fa-robot" style="color: #4285f4;"></i>
-                <span style="font-weight: 700;">AIML API INTERFACE (Gemini 1.5)</span>
+                <i class="fas fa-sparkles" style="color: #4285f4;"></i>
+                <span style="font-weight: 700;">GEMINI AI LAB</span>
             </div>
-            <div class="chat-messages" id="chat-box">
-                <div class="message bot-msg">Hello! I am connected via AIML API. How can I help you today?</div>
+            
+            <div id="chat-output">
+                <div class="message bot-msg">Hello! I'm ready. Please enter your API key in the script to start chatting.</div>
             </div>
+
             <div class="input-area">
-                <input type="text" id="user-input" placeholder="Ask Gemini something..." autocomplete="off">
+                <input type="text" id="user-input" placeholder="Ask me something..." autocomplete="off">
                 <button id="send-btn"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
     </main>
 
-    <script>
-        // 1. PASTE YOUR AIML API KEY HERE
-        const AIML_API_KEY = "51b7ed51f73940deade35d0c7df67c14"; 
+    <footer class="footer">
+        <p>&copy; 2025 MAKWANA MAULIK. Standalone AI Page.</p>
+    </footer>
 
-        const chatBox = document.getElementById('chat-box');
+    <script>
+        // REPLACE THIS WITH YOUR KEY
+        const API_KEY = "YOUR_ACTUAL_GEMINI_API_KEY"; 
+
+        const chatOutput = document.getElementById('chat-output');
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
 
-        function appendMessage(text, role) {
-            const div = document.createElement('div');
-            div.className = `message ${role}-msg`;
-            div.innerText = text;
-            chatBox.appendChild(div);
-            chatBox.scrollTop = chatBox.scrollHeight;
-            return div;
+        function appendMessage(text, type) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${type}`;
+            msgDiv.innerText = text;
+            chatOutput.appendChild(msgDiv);
+            chatOutput.scrollTop = chatOutput.scrollHeight;
+            return msgDiv;
         }
 
-        async function getAIResponse(prompt) {
-            try {
-                const response = await fetch("https://api.aimlapi.com/chat/completions", {
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${AIML_API_KEY}`,
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        model: "gemini-1.5-flash", // You can also use "gpt-4o" or "claude-3-5-sonnet"
-                        messages: [
-                            { role: "user", content: prompt }
-                        ],
-                        max_tokens: 512,
-                    }),
-                });
+        async function getGeminiResponse(userPrompt) {
+            // Updated URL to version 1.5 Flash for better compatibility
+            const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
+            const requestOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{ text: userPrompt }]
+                    }]
+                })
+            };
+
+            try {
+                const response = await fetch(API_URL, requestOptions);
                 const data = await response.json();
-                return data.choices[0].message.content;
+                
+                if (!response.ok) {
+                    throw new Error(data.error.message || "Unknown Error");
+                }
+
+                return data.candidates[0].content.parts[0].text;
             } catch (error) {
-                return "Error: Could not connect to AIML API. Check your key and balance.";
+                console.error("Fetch Error:", error);
+                return `Error: ${error.message}. Ensure your API key is valid and billing is enabled in Google AI Studio.`;
             }
         }
 
         async function handleChat() {
             const text = userInput.value.trim();
-            if (!text) return;
+            if (!text || API_KEY === "mnopqrstijkl5678mnopqrstijkl5678mnopqrst") {
+                if (API_KEY.includes("YOUR")) alert("Please add your Gemini API Key in the code first!");
+                return;
+            }
 
-            appendMessage(text, 'user');
+            appendMessage(text, 'user-msg');
             userInput.value = '';
 
-            const loading = appendMessage("Typing...", 'bot');
-            const aiReply = await getAIResponse(text);
-            loading.innerText = aiReply;
+            const loadingMsg = appendMessage("Gemini is thinking...", 'bot-msg');
+
+            const aiReply = await getGeminiResponse(text);
+            loadingMsg.innerText = aiReply;
         }
 
-        sendBtn.onclick = handleChat;
-        userInput.onkeypress = (e) => { if(e.key === 'Enter') handleChat(); };
+        sendBtn.addEventListener('click', handleChat);
+        userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleChat(); });
     </script>
 </body>
 </html>
