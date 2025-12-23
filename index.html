@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Lab - MAKWANA MAULIK</title>
+    <title>AI Lab - Groq Edition</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,42 +11,39 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
-        /* CSS remains the same as previous for design consistency */
         :root {
             --primary-bg: #0a0a0a;
             --secondary-bg: #1a1a1a;
             --text-color: #e0e0e0;
             --heading-color: #ffffff;
-            --accent-gradient: linear-gradient(90deg, #4285f4, #9b72cb, #d96570);
+            --accent-gradient: linear-gradient(90deg, #f59e0b, #d97706); /* Groq Orange Style */
             --border-color: #333333;
             --glass-bg: rgba(255, 255, 255, 0.05);
             --glass-border: 1px solid rgba(255, 255, 255, 0.1);
             --glass-blur: blur(12px);
         }
 
-        body { font-family: 'Poppins', sans-serif; background-color: var(--primary-bg); color: var(--text-color); margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--primary-bg); color: var(--text-color); margin: 0; display: flex; flex-direction: column; min-height: 100vh; overflow: hidden; }
         .wave-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; opacity: 0.03; background: radial-gradient(circle at 50% 50%, #ffffff, transparent 70%); }
 
         .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; background-color: rgba(16, 16, 16, 0.95); backdrop-filter: var(--glass-blur); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; }
-        .header-logo { width: 40px; height: 40px; border-radius: 50%; margin-right: 15px; padding: 3px; background-color: var(--primary-bg); }
-        .header-logo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
         .header-name { font-size: 1.4em; font-weight: 700; color: var(--heading-color); }
-        .nav-link { color: var(--text-color); text-decoration: none; font-weight: 600; font-size: 0.9em; padding: 8px 20px; border-radius: 50px; background: var(--glass-bg); border: var(--glass-border); transition: 0.3s; margin-left: 10px; }
-        
-        .main-content { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 5%; width: 100%; max-width: 1000px; margin: 0 auto; }
-        .ai-container { width: 100%; height: 70vh; background: var(--glass-bg); border: var(--glass-border); border-radius: 24px; display: flex; flex-direction: column; overflow: hidden; backdrop-filter: var(--glass-blur); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        
-        .chat-header { padding: 20px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px; }
-        #chat-output { flex-grow: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
-        .message { max-width: 80%; padding: 12px 18px; border-radius: 18px; line-height: 1.5; font-size: 0.95em; word-wrap: break-word; }
-        .user-msg { align-self: flex-end; background: #fff; color: #000; }
-        .bot-msg { align-self: flex-start; background: var(--glass-bg); border: 1px solid var(--border-color); }
 
-        .input-area { padding: 20px; display: flex; gap: 12px; border-top: 1px solid var(--border-color); }
-        #user-input { flex-grow: 1; background: #000; border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 20px; color: #fff; outline: none; }
-        #send-btn { background: var(--accent-gradient); border: none; width: 50px; height: 50px; border-radius: 12px; color: #000; cursor: pointer; }
+        .main-content { flex-grow: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .ai-container { width: 100%; max-width: 850px; height: 85vh; background: var(--glass-bg); border: var(--glass-border); border-radius: 24px; display: flex; flex-direction: column; overflow: hidden; backdrop-filter: var(--glass-blur); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        
+        .chat-header { padding: 15px 20px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .model-select { background: #000; color: #fff; border: 1px solid var(--border-color); padding: 5px 10px; border-radius: 8px; outline: none; font-size: 0.8em; }
 
-        .footer { background-color: var(--secondary-bg); padding: 30px 5%; border-top: 1px solid var(--border-color); text-align: center; }
+        .chat-messages { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .message { max-width: 85%; padding: 12px 18px; border-radius: 18px; font-size: 0.95em; line-height: 1.5; }
+        .user-msg { align-self: flex-end; background: #fff; color: #000; border-bottom-right-radius: 4px; }
+        .bot-msg { align-self: flex-start; background: var(--secondary-bg); border: 1px solid var(--border-color); color: #fff; border-bottom-left-radius: 4px; }
+
+        .input-area { padding: 20px; display: flex; gap: 10px; background: rgba(0,0,0,0.4); border-top: 1px solid var(--border-color); }
+        input { flex-grow: 1; background: #000; border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 20px; color: #fff; outline: none; }
+        button { background: var(--accent-gradient); border: none; width: 50px; border-radius: 12px; cursor: pointer; color: #fff; font-size: 1.2em; transition: 0.3s; }
+        button:hover { opacity: 0.8; transform: scale(1.05); }
     </style>
 </head>
 <body>
@@ -54,102 +51,97 @@
     <div class="wave-background"></div>
 
     <header class="header">
-        <div class="header-left">
-            <div class="header-logo"><img src="/Mauliksinh-Makwana/logo.png" alt="Logo"></div>
-            <span class="header-name">MAKWANA MAULIK</span>
-        </div>
-        <nav class="header-nav">
-            <a href="index.html" class="nav-link">Home</a>
-            <a href="#" class="nav-link">AI Lab</a>
-        </nav>
+        <span class="header-name">MAKWANA MAULIK</span>
+        <nav><a href="index.html" style="color: #fff; text-decoration: none; font-size: 0.9em; background: rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 20px;">Exit Lab</a></nav>
     </header>
 
     <main class="main-content">
         <div class="ai-container">
             <div class="chat-header">
-                <i class="fas fa-sparkles" style="color: #4285f4;"></i>
-                <span style="font-weight: 700;">GEMINI AI LAB</span>
+                <span style="font-weight: 700;"><i class="fas fa-tachometer-alt" style="color:#f59e0b;"></i> Groq LPU™ Inference</span>
+                <select id="model-selector" class="model-select">
+                    <option value="llama-3.1-70b-versatile">Llama 3.1 70B (Fast)</option>
+                    <option value="llama-3.1-8b-instant">Llama 3.1 8B (Instant)</option>
+                    <option value="mixtral-8x7b-32768">Mixtral 8x7B</option>
+                </select>
             </div>
-            
-            <div id="chat-output">
-                <div class="message bot-msg">Hello! I'm ready. Please enter your API key in the script to start chatting.</div>
+            <div class="chat-messages" id="chat-box">
+                <div class="message bot-msg">Hello! I'm running on Groq's LPU. Experience lightning-fast AI responses. How can I help you?</div>
             </div>
-
             <div class="input-area">
-                <input type="text" id="user-input" placeholder="Ask me something..." autocomplete="off">
+                <input type="text" id="user-input" placeholder="Type a message..." autocomplete="off">
                 <button id="send-btn"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
     </main>
 
-    <footer class="footer">
-        <p>&copy; 2025 MAKWANA MAULIK. Standalone AI Page.</p>
-    </footer>
-
     <script>
-        // REPLACE THIS WITH YOUR KEY
-        const API_KEY = "YOUR_ACTUAL_GEMINI_API_KEY"; 
+        // 1. GET YOUR FREE KEY FROM: https://console.groq.com/keys
+        const GROQ_API_KEY = "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"; 
 
-        const chatOutput = document.getElementById('chat-output');
+        const chatBox = document.getElementById('chat-box');
         const userInput = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
+        const modelSelector = document.getElementById('model-selector');
 
-        function appendMessage(text, type) {
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `message ${type}`;
-            msgDiv.innerText = text;
-            chatOutput.appendChild(msgDiv);
-            chatOutput.scrollTop = chatOutput.scrollHeight;
-            return msgDiv;
+        function appendMessage(text, role) {
+            const div = document.createElement('div');
+            div.className = `message ${role}-msg`;
+            div.innerText = text;
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return div;
         }
 
-        async function getGeminiResponse(userPrompt) {
-            // Updated URL to version 1.5 Flash for better compatibility
-            const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
-
-            const requestOptions = {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: [{
-                        parts: [{ text: userPrompt }]
-                    }]
-                })
-            };
-
+        async function getAIResponse(prompt) {
+            const selectedModel = modelSelector.value;
+            
             try {
-                const response = await fetch(API_URL, requestOptions);
+                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${GROQ_API_KEY}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        "model": selectedModel,
+                        "messages": [
+                            {"role": "user", "content": prompt}
+                        ],
+                        "temperature": 0.7
+                    })
+                });
+
                 const data = await response.json();
                 
-                if (!response.ok) {
-                    throw new Error(data.error.message || "Unknown Error");
+                if (data.choices && data.choices.length > 0) {
+                    return data.choices[0].message.content;
+                } else {
+                    return "Error: " + (data.error?.message || "Check your API limits.");
                 }
-
-                return data.candidates[0].content.parts[0].text;
             } catch (error) {
-                console.error("Fetch Error:", error);
-                return `Error: ${error.message}. Ensure your API key is valid and billing is enabled in Google AI Studio.`;
+                return "Connection Error: Check your API key and Internet.";
             }
         }
 
         async function handleChat() {
             const text = userInput.value.trim();
-            if (!text || API_KEY === "mnopqrstijkl5678mnopqrstijkl5678mnopqrst") {
-                if (API_KEY.includes("YOUR")) alert("Please add your Gemini API Key in the code first!");
+            if (!text) return;
+            if (GROQ_API_KEY.includes("YOUR")) {
+                alert("Please paste your Groq API Key in the code first!");
                 return;
             }
 
-            appendMessage(text, 'user-msg');
+            appendMessage(text, 'user');
             userInput.value = '';
 
-            const loadingMsg = appendMessage("Gemini is thinking...", 'bot-msg');
-
-            const aiReply = await getGeminiResponse(text);
-            loadingMsg.innerText = aiReply;
+            const loading = appendMessage("...", 'bot');
+            const aiReply = await getAIResponse(text);
+            loading.innerText = aiReply;
         }
 
-        sendBtn.addEventListener('click', handleChat);
-        userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleChat(); });
+        sendBtn.onclick = handleChat;
+        userInput.onkeypress = (e) => { if(e.key === 'Enter') handleChat(); };
     </script>
 </body>
 </html>
