@@ -6,396 +6,850 @@
     <title>Ventora AI - Medical Information Assistant</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="ventora.css">
-    <script src="ventora.js" defer></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #222;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #333;
+        }
+        /* Medium glow intensity */
+        .glow-orb {
+            opacity: 0.06;
+        }
+    </style>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
-<body class="bg-black text-white overflow-x-hidden">
-    <canvas id="star-canvas" class="fixed inset-0 w-full h-full pointer-events-none z-0"></canvas>
-    <header class="w-full h-24 flex items-center justify-between px-6 md:px-12 z-50 fixed top-0 backdrop-blur-md border-b border-white/5 bg-black/40">
-        <div class="flex items-center gap-2">
-            <div class="text-2xl font-black tracking-[0.2em] uppercase">
-                VENTORA<span class="text-blue-500">AI</span>
-            </div>
-        </div>
-        <nav class="hidden md:flex items-center gap-10 text-xs font-bold tracking-widest uppercase text-gray-400">
-            <button onclick="scrollToSection('features')" class="hover:text-white hover:translate-y-[-1px] transition-all">
-                Features
-            </button>
-            <button onclick="scrollToSection('technology')" class="hover:text-white hover:translate-y-[-1px] transition-all">
-                About
-            </button>
-            <div class="w-px h-4 bg-white/10 mx-2"></div>
-            <div class="px-4 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded text-[10px] text-blue-400 tracking-widest">
-                V5.4 MIA
-            </div>
-        </nav>
-        <div class="md:hidden">
-            <div class="px-3 py-1 bg-white/5 border border-white/10 rounded text-[10px] tracking-widest uppercase">
-                V5.4
-            </div>
-        </div>
-    </header>
-    <div id="content" class="relative z-10 pt-24">
-        <div id="home-view">
-            <section id="hero" class="min-h-screen flex items-center justify-center px-6 md:px-12 relative overflow-hidden">
-                <div class="max-w-7xl mx-auto text-center space-y-8 md:space-y-12">
-                    <div class="space-y-4 md:space-y-6">
-                        <h1 class="text-5xl md:text-8xl font-black tracking-tighter leading-none uppercase">
-                            Medical<span class="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent"> Intelligence</span>
-                        </h1>
-                        <p class="text-xl md:text-2xl text-gray-400 font-light max-w-2xl mx-auto leading-relaxed">
-                            Your sophisticated AI companion for pharmaceutical research, clinical insights, and nutritional analysis.
-                        </p>
-                    </div>
-                    <div class="flex flex-col md:flex-row items-center justify-center gap-4">
-                        <a href="https://ventora-ai.vercel.app/" class="px-10 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold rounded-full transition-all shadow-lg hover:shadow-blue-500/20 uppercase tracking-widest text-sm">
-                            Launch Assistant
-                        </a>
-                        <button onclick="setView('privacy')" class="px-10 py-4 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold rounded-full transition-all uppercase tracking-widest text-sm">
-                            Privacy First
-                        </button>
-                    </div>
-                    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce text-gray-500">
-                        <i class="fas fa-chevron-down text-2xl"></i>
-                    </div>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const StarBackground = () => {
+          const canvasRef = React.useRef(null);
+
+          React.useEffect(() => {
+            const canvas = canvasRef.current;
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+
+            let animationFrameId;
+            let stars = [];
+            const starCount = 150;
+
+            const resize = () => {
+              canvas.width = window.innerWidth;
+              canvas.height = window.innerHeight;
+              initStars();
+            };
+
+            const initStars = () => {
+              stars = [];
+              for (let i = 0; i < starCount; i++) {
+                stars.push({
+                  x: Math.random() * canvas.width,
+                  y: Math.random() * canvas.height,
+                  size: Math.random() * 1.5 + 0.2,
+                  speed: Math.random() * 0.2 + 0.05,
+                  opacity: Math.random() * 0.5 + 0.2
+                });
+              }
+            };
+
+            const draw = () => {
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              
+              stars.forEach((star) => {
+                ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                star.y -= star.speed;
+                
+                if (star.y < 0) {
+                  star.y = canvas.height;
+                  star.x = Math.random() * canvas.width;
+                }
+              });
+
+              animationFrameId = requestAnimationFrame(draw);
+            };
+
+            window.addEventListener('resize', resize);
+            resize();
+            draw();
+
+            return () => {
+              window.removeEventListener('resize', resize);
+              cancelAnimationFrame(animationFrameId);
+            };
+          }, []);
+
+          return (
+            <canvas
+              ref={canvasRef}
+              className="fixed inset-0 w-full h-full pointer-events-none z-0"
+            />
+          );
+        };
+
+        const Header = ({ onNavigate }) => {
+          return (
+            <header className="w-full h-24 flex items-center justify-between px-6 md:px-12 z-50 fixed top-0 backdrop-blur-md border-b border-white/5 bg-black/40">
+              <div className="flex items-center gap-2">
+                <div className="text-2xl font-black tracking-[0.2em] uppercase">
+                  VENTORA<span className="text-blue-500">AI</span>
                 </div>
-            </section>
-            <section id="features" class="py-32 px-6 md:px-12">
-                <div class="max-w-7xl mx-auto space-y-24">
-                    <div class="text-center space-y-6">
-                        <h2 class="text-4xl md:text-6xl font-black">Core Capabilities</h2>
-                        <p class="text-xl text-gray-400 max-w-3xl mx-auto">
-                            Advanced AI-driven analysis for healthcare professionals and researchers
-                        </p>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                        <div class="group relative p-8 bg-[#0a0a0a] border border-white/10 rounded-2xl hover:border-blue-500/30 transition-all">
-                            <div class="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400 mb-6 group-hover:bg-blue-500/20 transition-colors">
-                                <i class="fa-solid fa-pills text-3xl"></i>
-                            </div>
-                            <h3 class="text-xl font-bold mb-4">Pharma Intelligence</h3>
-                            <p class="text-gray-500">Deep insights into chemical compositions and pharmaceutical classifications.</p>
-                        </div>
-                        <div class="group relative p-8 bg-[#0a0a0a] border border-white/10 rounded-2xl hover:border-purple-500/30 transition-all">
-                            <div class="w-16 h-16 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-400 mb-6 group-hover:bg-purple-500/20 transition-colors">
-                                <i class="fa-solid fa-dna text-3xl"></i>
-                            </div>
-                            <h3 class="text-xl font-bold mb-4">Disease Mapping</h3>
-                            <p class="text-gray-500">Understanding complex pathologies and clinical manifestations clearly.</p>
-                        </div>
-                        <div class="group relative p-8 bg-[#0a0a0a] border border-white/10 rounded-2xl hover:border-blue-500/30 transition-all">
-                            <div class="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400 mb-6 group-hover:bg-blue-500/20 transition-colors">
-                                <i class="fa-solid fa-apple-whole text-3xl"></i>
-                            </div>
-                            <h3 class="text-xl font-bold mb-4">Nutritional Science</h3>
-                            <p class="text-gray-500">Evidence-based dietary analysis and metabolic interaction studies.</p>
-                        </div>
-                        <div class="group relative p-8 bg-[#0a0a0a] border border-white/10 rounded-2xl hover:border-purple-500/30 transition-all">
-                            <div class="w-16 h-16 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-400 mb-6 group-hover:bg-purple-500/20 transition-colors">
-                                <i class="fa-solid fa-vial-circle-check text-3xl"></i>
-                            </div>
-                            <h3 class="text-xl font-bold mb-4">Clinical Accuracy</h3>
-                            <p class="text-gray-500">Verified medical data processed through advanced AI logic for research.</p>
-                        </div>
-                    </div>
+              </div>
+              
+              <nav className="hidden md:flex items-center gap-10 text-xs font-bold tracking-widest uppercase text-gray-400">
+                <button 
+                  onClick={() => onNavigate('features')} 
+                  className="hover:text-white hover:translate-y-[-1px] transition-all"
+                >
+                  Features
+                </button>
+                <button 
+                  onClick={() => onNavigate('about')} 
+                  className="hover:text-white hover:translate-y-[-1px] transition-all"
+                >
+                  About
+                </button>
+                <div className="w-px h-4 bg-white/10 mx-2"></div>
+                <div className="px-4 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded text-[10px] text-blue-400 tracking-widest">
+                  V5.4 MIA
                 </div>
-            </section>
-            <section id="security" class="py-32 px-6 md:px-12 bg-gradient-to-b from-black to-[#0a0a0a]">
-                <div class="max-w-7xl mx-auto space-y-24">
-                    <div class="text-center space-y-6">
-                        <h2 class="text-4xl md:text-6xl font-black">Security Architecture</h2>
-                        <p class="text-xl text-gray-400 max-w-3xl mx-auto">
-                            Privacy-centric design for sensitive medical information
-                        </p>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                        <div class="p-8 bg-white/[0.02] border border-white/5 rounded-3xl space-y-4">
-                            <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
-                                <i class="fa-solid fa-database"></i>
-                            </div>
-                            <h4 class="font-bold text-white">Local Storage</h4>
-                            <p class="text-gray-500 text-sm">All data stays on your device.</p>
-                        </div>
-                        <div class="p-8 bg-white/[0.02] border border-white/5 rounded-3xl space-y-4">
-                            <div class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400">
-                                <i class="fa-solid fa-user-secret"></i>
-                            </div>
-                            <h4 class="font-bold text-white">No Tracking</h4>
-                            <p class="text-gray-500 text-sm">We don't monitor your activity.</p>
-                        </div>
-                        <div class="p-8 bg-white/[0.02] border border-white/5 rounded-3xl space-y-4">
-                            <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
-                                <i class="fa-solid fa-id-card-clip"></i>
-                            </div>
-                            <h4 class="font-bold text-white">No Account</h4>
-                            <p class="text-gray-500 text-sm">Start instantly without sign-up.</p>
-                        </div>
-                        <div class="p-8 bg-white/[0.02] border border-white/5 rounded-3xl space-y-4">
-                            <div class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400">
-                                <i class="fa-solid fa-code-branch"></i>
-                            </div>
-                            <h4 class="font-bold text-white">Open Source</h4>
-                            <p class="text-gray-500 text-sm">Transparent and auditable code.</p>
-                        </div>
-                    </div>
+              </nav>
+
+              <div className="md:hidden">
+                 <div className="px-3 py-1 bg-white/5 border border-white/10 rounded text-[10px] tracking-widest uppercase">
+                  V5.4
                 </div>
-            </section>
-            <section id="technology" class="py-32 px-6 md:px-12">
-                <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                    <div class="space-y-8">
-                        <h2 class="text-4xl md:text-6xl font-black">Advanced <span class="text-blue-500">Tech</span> Stack</h2>
-                        <p class="text-xl text-gray-400 leading-relaxed max-w-xl">
-                            Powered by state-of-the-art AI with medical-grade precision and real-time capabilities.
-                        </p>
-                        <button onclick="setView('about')" class="mt-4 px-8 py-3 bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20 text-blue-400 rounded-full font-bold transition-all text-sm uppercase tracking-widest">
-                            Learn More About Us
-                        </button>
-                    </div>
-                    <div class="relative group">
-                        <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
-                        <div class="relative bg-[#0a0a0a] border border-white/10 rounded-2xl p-10 overflow-hidden">
-                            <div class="flex flex-col gap-6">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
-                                        <i class="fas fa-microchip"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-white">Neural Medical Core</h4>
-                                        <p class="text-xs text-gray-500">Custom LLM parameters for healthcare accuracy.</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-center gap-4">
-                                    <div class="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400">
-                                        <i class="fas fa-shield-heart"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-white">Ethics-First Logic</h4>
-                                        <p class="text-xs text-gray-500">Strict safety guardrails and medical disclaimers.</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-center gap-4">
-                                    <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
-                                        <i class="fas fa-bolt"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-white">Zero Latency Sync</h4>
-                                        <p class="text-xs text-gray-500">Real-time data fetching for up-to-date research.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="absolute top-0 right-0 p-8 opacity-10">
-                                <i class="fa-solid fa-staff-snake text-9xl text-white"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-        <div id="privacy-view" style="display: none;">
-            <div class="w-full pt-32 pb-20 px-6">
-                <div class="max-w-4xl mx-auto">
-                    <button onclick="setView('home')" class="mb-8 flex items-center gap-2 text-gray-500 hover:text-white transition-colors uppercase tracking-widest text-xs font-bold">
-                        <i class="fas fa-arrow-left"></i>
-                        Back to Home
-                    </button>
-                    <div class="mb-12">
-                        <h1 class="text-4xl md:text-6xl font-black mb-4 tracking-tight">Privacy <span class="text-blue-500">&</span> Security</h1>
-                        <div class="h-1 w-24 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
-                    </div>
-                    <div class="space-y-12">
-                        <p class="text-xl text-gray-400 font-light leading-relaxed">
-                            Your privacy and security are our top priority. Ventora AI is designed with privacy-first principles to ensure your data remains secure and private.
-                        </p>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <section class="p-8 rounded-3xl bg-white/[0.03] border border-white/5 space-y-4">
-                                <div class="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-400 mb-2">
-                                    <i class="fas fa-database text-xl"></i>
-                                </div>
-                                <h3 class="text-xl font-bold text-white">Local Storage</h3>
-                                <p class="text-gray-500 text-sm leading-relaxed">
-                                    All your conversations, settings, and personal data are stored locally in your browser. No data is sent to external servers for storage.
-                                </p>
-                            </section>
-                            <section class="p-8 rounded-3xl bg-white/[0.03] border border-white/5 space-y-4">
-                                <div class="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400 mb-2">
-                                    <i class="fas fa-user-slash text-xl"></i>
-                                </div>
-                                <h3 class="text-xl font-bold text-white">No Account Required</h3>
-                                <p class="text-gray-500 text-sm leading-relaxed">
-                                    Ventora AI doesn't require you to create an account. Your data stays with you on your device.
-                                </p>
-                            </section>
-                            <section class="p-8 rounded-3xl bg-white/[0.03] border border-white/5 space-y-4">
-                                <div class="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-400 mb-2">
-                                    <i class="fas fa-user-secret text-xl"></i>
-                                </div>
-                                <h3 class="text-xl font-bold text-white">No Personal Tracking</h3>
-                                <p class="text-gray-500 text-sm leading-relaxed">
-                                    We don't track your personal information, browsing history, or usage patterns. Your interactions remain private.
-                                </p>
-                            </section>
-                            <section class="p-8 rounded-3xl bg-white/[0.03] border border-white/5 space-y-4">
-                                <div class="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400 mb-2">
-                                    <i class="fas fa-hand-holding-heart text-xl"></i>
-                                </div>
-                                <h3 class="text-xl font-bold text-white">Data Ownership</h3>
-                                <p class="text-gray-500 text-sm leading-relaxed">
-                                    You own all your data. You can export your conversations at any time or clear all data with one click.
-                                </p>
-                            </section>
-                            <section class="p-8 rounded-3xl bg-white/[0.03] border border-white/5 space-y-4">
-                                <div class="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-400 mb-2">
-                                    <i class="fas fa-code text-xl"></i>
-                                </div>
-                                <h3 class="text-xl font-bold text-white">Open Source</h3>
-                                <p class="text-gray-500 text-sm leading-relaxed">
-                                    Ventora AI's code is transparent. You can review how it handles your data and verify its security measures.
-                                </p>
-                            </section>
-                            <section class="p-8 rounded-3xl bg-red-500/5 border border-red-500/10 space-y-4">
-                                <div class="w-12 h-12 rounded-2xl bg-red-500/10 flex items-center justify-center text-red-400 mb-2">
-                                    <i class="fas fa-exclamation-triangle text-xl"></i>
-                                </div>
-                                <h3 class="text-xl font-bold text-white">Medical Disclaimer</h3>
-                                <p class="text-gray-500 text-sm leading-relaxed">
-                                    Ventora AI provides educational information only. It is not a substitute for professional medical advice.
-                                </p>
-                            </section>
-                        </div>
-                        <div class="pt-20 text-center">
-                            <button onclick="setView('home')" class="px-10 py-4 bg-white/5 border border-white/10 hover:bg-white/10 rounded-full font-bold transition-all">
-                                Return to Landing Page
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="about-view" style="display: none;">
-            <div class="w-full pt-32 pb-20 px-6">
-                <div class="max-w-4xl mx-auto">
-                    <button onclick="setView('home')" class="mb-8 flex items-center gap-2 text-gray-500 hover:text-white transition-colors uppercase tracking-widest text-xs font-bold">
-                        <i class="fas fa-arrow-left"></i>
-                        Back to Home
-                    </button>
-                    <div class="mb-12">
-                        <h1 class="text-4xl md:text-6xl font-black mb-4 tracking-tight text-white">About <span class="text-blue-500">Ventora AI</span></h1>
-                        <div class="h-1 w-24 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
-                    </div>
-                    <div class="space-y-16">
-                        <section class="space-y-6">
-                            <h2 class="text-2xl md:text-3xl font-bold text-white">Bridging the Gap</h2>
-                            <p class="text-lg text-gray-400 font-light leading-relaxed">
-                                Ventora AI is a sophisticated Medical Information Assistant (MIA) developed to provide people with clear, science-backed understanding of medicines, diseases, and nutrition. We believe that health literacy shouldn't be gated behind complex academic jargon.
-                            </p>
-                            <p class="text-lg text-gray-400 font-light leading-relaxed">
-                                By combining cutting-edge pharmaceutical science with advanced AI technology, Ventora acts as a reliable companion for educational awareness, helping users navigate the complexities of clinical data through a simplified, intuitive interface.
-                            </p>
-                        </section>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                            <div class="space-y-4 border-l-2 border-blue-500/30 pl-6">
-                                <h3 class="text-xl font-bold text-white">Our Mission</h3>
-                                <p class="text-gray-500 text-sm leading-relaxed">
-                                    To democratize healthcare information by making pharmaceutical depth accessible to everyone, ensuring people can make more informed decisions about their well-being.
-                                </p>
-                            </div>
-                            <div class="space-y-4 border-l-2 border-purple-500/30 pl-6">
-                                <h3 class="text-xl font-bold text-white">Clinical Integrity</h3>
-                                <p class="text-gray-500 text-sm leading-relaxed">
-                                    Ventora is built on verified data structures. While it is an educational tool, the accuracy and depth of information provided are rooted in established pharmaceutical research.
-                                </p>
-                            </div>
-                        </div>
-                        <section class="p-10 rounded-3xl bg-white/[0.03] border border-white/5 relative overflow-hidden">
-                            <div class="relative z-10 space-y-6">
-                                <h2 class="text-2xl font-bold text-white">Technology & Versioning</h2>
-                                <div class="flex flex-wrap gap-4">
-                                    <div class="px-6 py-3 bg-blue-500/10 rounded-2xl border border-blue-500/20">
-                                        <div class="text-[10px] uppercase tracking-widest font-bold text-blue-400 mb-1">Current Version</div>
-                                        <div class="text-xl font-black text-white">V5.4 MIA</div>
-                                    </div>
-                                    <div class="px-6 py-3 bg-purple-500/10 rounded-2xl border border-purple-500/20">
-                                        <div class="text-[10px] uppercase tracking-widest font-bold text-purple-400 mb-1">Architecture</div>
-                                        <div class="text-xl font-black text-white">Hybrid-Neural</div>
-                                    </div>
-                                </div>
-                                <p class="text-gray-500 text-sm leading-relaxed max-w-2xl">
-                                    The current V5.4 Medical Information Assistant (MIA) update introduces enhanced reasoning for drug-to-drug interactions and expanded nutritional metabolic mapping.
-                                </p>
-                            </div>
-                            <i class="fa-solid fa-dna absolute bottom-[-20%] right-[-5%] text-[15rem] opacity-5 text-white pointer-events-none"></i>
-                        </section>
-                        <section class="text-center py-10 space-y-6">
-                            <h3 class="text-xl font-bold text-white">The Creator</h3>
-                            <p class="text-gray-400">Created with care and scientific rigor by</p>
-                            <div class="text-2xl md:text-3xl font-black tracking-[0.4em] uppercase text-white bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-                                Maulik Sinh Makwana
-                            </div>
-                            <p class="text-xs text-gray-600 uppercase tracking-widest font-bold mb-8">Pharmaceutical Technologist & AI Enthusiast</p>
-                            <div class="flex flex-wrap justify-center gap-4">
-                                <a href="https://www.linkedin.com/in/mauliksinh" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-6 py-2 rounded-full border border-blue-500/20 bg-blue-500/5 text-blue-400 hover:bg-blue-500/10 transition-all text-xs font-bold uppercase tracking-widest">
-                                    <i class="fab fa-linkedin"></i>
-                                    LinkedIn
-                                </a>
-                                <a href="https://mauliksinhmakwana.github.io/Mauliksinh-Makwana/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-6 py-2 rounded-full border border-purple-500/20 bg-purple-500/5 text-purple-400 hover:bg-purple-500/10 transition-all text-xs font-bold uppercase tracking-widest">
-                                    <i class="fa-solid fa-globe"></i>
-                                    Portfolio
-                                </a>
-                            </div>
-                        </section>
-                        <div class="pt-10 text-center">
-                            <button onclick="setView('home')" class="px-12 py-4 bg-white/5 border border-white/10 hover:bg-white/10 rounded-full font-bold transition-all uppercase tracking-widest text-xs">
-                                Return to Home
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <footer class="w-full py-20 px-6 md:px-12 z-20 border-t border-white/5 bg-black">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 items-start">
-            <div class="flex flex-col gap-6">
-                <div class="text-2xl font-black tracking-[0.2em] uppercase">
-                    VENTORA<span class="text-blue-500">AI</span>
-                </div>
-                <p class="text-gray-500 text-sm max-w-xs leading-relaxed">
+              </div>
+            </header>
+          );
+        };
+
+        const Footer = ({ onAboutClick, onPrivacyClick }) => {
+          return (
+            <footer className="w-full py-20 px-6 md:px-12 z-20 border-t border-white/5 bg-black">
+              <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 items-start">
+                
+                <div className="flex flex-col gap-6">
+                  <div className="text-2xl font-black tracking-[0.2em] uppercase">
+                    VENTORA<span className="text-blue-500">AI</span>
+                  </div>
+                  <p className="text-gray-500 text-sm max-w-xs leading-relaxed">
                     Advancing healthcare through responsible pharmaceutical intelligence. Empowering users with clinical depth and digital clarity.
-                </p>
-                <div class="flex items-center gap-6 pt-2">
-                    <a href="https://www.linkedin.com/in/mauliksinh" target="_blank" rel="noopener noreferrer" class="text-gray-500 hover:text-blue-400 transition-colors text-xl">
-                        <i class="fab fa-linkedin"></i>
+                  </p>
+                  <div className="flex items-center gap-6 pt-2">
+                    <a href="https://www.linkedin.com/in/mauliksinh" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-blue-400 transition-colors text-xl">
+                      <i className="fab fa-linkedin"></i>
                     </a>
-                    <a href="https://mauliksinhmakwana.github.io/Mauliksinh-Makwana/" target="_blank" rel="noopener noreferrer" class="text-gray-500 hover:text-white transition-colors text-xl">
-                        <i class="fa-solid fa-globe"></i>
+                    <a href="https://mauliksinhmakwana.github.io/Mauliksinh-Makwana/" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-white transition-colors text-xl">
+                      <i className="fa-solid fa-globe"></i>
                     </a>
-                    <a href="#" class="text-gray-500 hover:text-purple-400 transition-colors text-xl">
-                        <i class="fab fa-instagram"></i>
+                    <a href="#" className="text-gray-500 hover:text-purple-400 transition-colors text-xl">
+                      <i className="fab fa-instagram"></i>
                     </a>
+                  </div>
                 </div>
+
+                <div className="flex flex-col gap-6">
+                  <h4 className="text-xs uppercase tracking-[0.3em] font-bold text-gray-300">Quick Navigation</h4>
+                  <ul className="space-y-4 text-sm text-gray-500">
+                    <li><button onClick={onAboutClick} className="hover:text-blue-400 transition-colors text-left">Mission & Vision</button></li>
+                    <li><button onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})} className="hover:text-blue-400 transition-colors text-left">Back to Top</button></li>
+                    <li><a href="https://ventora-ai.vercel.app/" className="hover:text-blue-400 transition-colors">Launch Assistant</a></li>
+                  </ul>
+                </div>
+
+                <div className="flex flex-col gap-6">
+                  <h4 className="text-xs uppercase tracking-[0.3em] font-bold text-gray-300">Legal & Support</h4>
+                  <ul className="space-y-4 text-sm text-gray-500">
+                    <li><button onClick={onPrivacyClick} className="hover:text-purple-400 transition-colors text-left">Privacy & Security</button></li>
+                    <li><a href="mailto:support@ventora.ai" className="hover:text-purple-400 transition-colors">Technical Support</a></li>
+                    <li><span className="text-[10px] tracking-widest text-gray-600 uppercase">© {new Date().getFullYear()} VENTORA LABS</span></li>
+                  </ul>
+                </div>
+
+              </div>
+              
+              <div className="mt-20 pt-8 border-t border-white/5 text-center">
+                <p className="text-[10px] tracking-[0.5em] uppercase text-gray-700 font-bold">
+                  Developed by Maulik Sinh Makwana
+                </p>
+              </div>
+            </footer>
+          );
+        };
+
+        const AboutPage = ({ onBack }) => {
+          return (
+            <div className="relative z-10 w-full pt-32 pb-20 px-6 animate-in fade-in slide-in-from-right duration-700">
+              <div className="max-w-4xl mx-auto">
+                <button 
+                  onClick={onBack}
+                  className="mb-8 flex items-center gap-2 text-gray-500 hover:text-white transition-colors uppercase tracking-widest text-xs font-bold"
+                >
+                  <i className="fas fa-arrow-left"></i>
+                  Back to Home
+                </button>
+
+                <div className="mb-12">
+                  <h1 className="text-4xl md:text-6xl font-black mb-4 tracking-tight text-white">About <span className="text-blue-500">Ventora AI</span></h1>
+                  <div className="h-1 w-24 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
+                </div>
+
+                <div className="space-y-16">
+                  <section className="space-y-6">
+                    <h2 className="text-2xl md:text-3xl font-bold text-white">Bridging the Gap</h2>
+                    <p className="text-lg text-gray-400 font-light leading-relaxed">
+                      Ventora AI is a sophisticated Medical Information Assistant (MIA) developed to provide people with clear, science-backed understanding of medicines, diseases, and nutrition. We believe that health literacy shouldn't be gated behind complex academic jargon.
+                    </p>
+                    <p className="text-lg text-gray-400 font-light leading-relaxed">
+                      By combining cutting-edge pharmaceutical science with advanced AI technology, Ventora acts as a reliable companion for educational awareness, helping users navigate the complexities of clinical data through a simplified, intuitive interface.
+                    </p>
+                  </section>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <div className="space-y-4 border-l-2 border-blue-500/30 pl-6">
+                      <h3 className="text-xl font-bold text-white">Our Mission</h3>
+                      <p className="text-gray-500 text-sm leading-relaxed">
+                        To democratize healthcare information by making pharmaceutical depth accessible to everyone, ensuring people can make more informed decisions about their well-being.
+                      </p>
+                    </div>
+                    <div className="space-y-4 border-l-2 border-purple-500/30 pl-6">
+                      <h3 className="text-xl font-bold text-white">Clinical Integrity</h3>
+                      <p className="text-gray-500 text-sm leading-relaxed">
+                        Ventora is built on verified data structures. While it is an educational tool, the accuracy and depth of information provided are rooted in established pharmaceutical research.
+                      </p>
+                    </div>
+                  </div>
+
+                  <section className="p-10 rounded-3xl bg-white/[0.03] border border-white/5 relative overflow-hidden">
+                     <div className="relative z-10 space-y-6">
+                       <h2 className="text-2xl font-bold text-white">Technology & Versioning</h2>
+                       <div className="flex flex-wrap gap-4">
+                         <div className="px-6 py-3 bg-blue-500/10 rounded-2xl border border-blue-500/20">
+                           <div className="text-[10px] uppercase tracking-widest font-bold text-blue-400 mb-1">Current Version</div>
+                           <div className="text-xl font-black text-white">V5.4 MIA</div>
+                         </div>
+                         <div className="px-6 py-3 bg-purple-500/10 rounded-2xl border border-purple-500/20">
+                           <div className="text-[10px] uppercase tracking-widest font-bold text-purple-400 mb-1">Architecture</div>
+                           <div className="text-xl font-black text-white">Hybrid-Neural</div>
+                         </div>
+                       </div>
+                       <p className="text-gray-500 text-sm leading-relaxed max-w-2xl">
+                         The current V5.4 Medical Information Assistant (MIA) update introduces enhanced reasoning for drug-to-drug interactions and expanded nutritional metabolic mapping.
+                       </p>
+                     </div>
+                     <i className="fa-solid fa-dna absolute bottom-[-20%] right-[-5%] text-[15rem] opacity-5 text-white pointer-events-none"></i>
+                  </section>
+
+                  <section className="text-center py-10 space-y-6">
+                    <h3 className="text-xl font-bold text-white">The Creator</h3>
+                    <p className="text-gray-400">Created with care and scientific rigor by</p>
+                    <div className="text-2xl md:text-3xl font-black tracking-[0.4em] uppercase text-white bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+                      Maulik Sinh Makwana
+                    </div>
+                    <p className="text-xs text-gray-600 uppercase tracking-widest font-bold mb-8">Pharmaceutical Technologist & AI Enthusiast</p>
+                    
+                    <div className="flex flex-wrap justify-center gap-4">
+                       <a 
+                         href="https://www.linkedin.com/in/mauliksinh" 
+                         target="_blank" 
+                         rel="noopener noreferrer"
+                         className="flex items-center gap-2 px-6 py-2 rounded-full border border-blue-500/20 bg-blue-500/5 text-blue-400 hover:bg-blue-500/10 transition-all text-xs font-bold uppercase tracking-widest"
+                       >
+                         <i className="fab fa-linkedin"></i>
+                         LinkedIn
+                       </a>
+                       <a 
+                         href="https://mauliksinhmakwana.github.io/Mauliksinh-Makwana/" 
+                         target="_blank" 
+                         rel="noopener noreferrer"
+                         className="flex items-center gap-2 px-6 py-2 rounded-full border border-purple-500/20 bg-purple-500/5 text-purple-400 hover:bg-purple-500/10 transition-all text-xs font-bold uppercase tracking-widest"
+                       >
+                         <i className="fa-solid fa-globe"></i>
+                         Portfolio
+                       </a>
+                    </div>
+                  </section>
+
+                  <div className="pt-10 text-center">
+                    <button 
+                      onClick={onBack}
+                      className="px-12 py-4 bg-white/5 border border-white/10 hover:bg-white/10 rounded-full font-bold transition-all uppercase tracking-widest text-xs"
+                    >
+                      Return to Home
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="flex flex-col gap-6">
-                <h4 class="text-xs uppercase tracking-[0.3em] font-bold text-gray-300">Quick Navigation</h4>
-                <ul class="space-y-4 text-sm text-gray-500">
-                    <li><button onclick="setView('about')" class="hover:text-blue-400 transition-colors text-left">Mission & Vision</button></li>
-                    <li><button onclick="scrollToTop()" class="hover:text-blue-400 transition-colors text-left">Back to Top</button></li>
-                    <li><a href="https://ventora-ai.vercel.app/" class="hover:text-blue-400 transition-colors">Launch Assistant</a></li>
-                </ul>
+          );
+        };
+
+        const PrivacyPage = ({ onBack }) => {
+          return (
+            <div className="relative z-10 w-full pt-32 pb-20 px-6 animate-in fade-in slide-in-from-right duration-700">
+              <div className="max-w-4xl mx-auto">
+                <button 
+                  onClick={onBack}
+                  className="mb-8 flex items-center gap-2 text-gray-500 hover:text-white transition-colors uppercase tracking-widest text-xs font-bold"
+                >
+                  <i className="fas fa-arrow-left"></i>
+                  Back to Home
+                </button>
+
+                <div className="mb-12">
+                  <h1 className="text-4xl md:text-6xl font-black mb-4 tracking-tight">Privacy <span className="text-blue-500">&</span> Security</h1>
+                  <div className="h-1 w-24 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
+                </div>
+
+                <div className="space-y-12">
+                  <p className="text-xl text-gray-400 font-light leading-relaxed">
+                    Your privacy and security are our top priority. Ventora AI is designed with privacy-first principles to ensure your data remains secure and private.
+                  </p>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <section className="p-8 rounded-3xl bg-white/[0.03] border border-white/5 space-y-4">
+                      <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-400 mb-2">
+                        <i className="fas fa-database text-xl"></i>
+                      </div>
+                      <h3 className="text-xl font-bold text-white">Local Storage</h3>
+                      <p className="text-gray-500 text-sm leading-relaxed">
+                        All your conversations, settings, and personal data are stored locally in your browser. No data is sent to external servers for storage.
+                      </p>
+                    </section>
+
+                    <section className="p-8 rounded-3xl bg-white/[0.03] border border-white/5 space-y-4">
+                      <div className="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400 mb-2">
+                        <i className="fas fa-user-slash text-xl"></i>
+                      </div>
+                      <h3 className="text-xl font-bold text-white">No Account Required</h3>
+                      <p className="text-gray-500 text-sm leading-relaxed">
+                        Ventora AI doesn't require you to create an account. Your data stays with you on your device.
+                      </p>
+                    </section>
+
+                    <section className="p-8 rounded-3xl bg-white/[0.03] border border-white/5 space-y-4">
+                      <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-400 mb-2">
+                        <i className="fas fa-user-secret text-xl"></i>
+                      </div>
+                      <h3 className="text-xl font-bold text-white">No Personal Tracking</h3>
+                      <p className="text-gray-500 text-sm leading-relaxed">
+                        We don't track your personal information, browsing history, or usage patterns. Your interactions remain private.
+                      </p>
+                    </section>
+
+                    <section className="p-8 rounded-3xl bg-white/[0.03] border border-white/5 space-y-4">
+                      <div className="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400 mb-2">
+                        <i className="fas fa-hand-holding-heart text-xl"></i>
+                      </div>
+                      <h3 className="text-xl font-bold text-white">Data Ownership</h3>
+                      <p className="text-gray-500 text-sm leading-relaxed">
+                        You own all your data. You can export your conversations at any time or clear all data with one click.
+                      </p>
+                    </section>
+
+                    <section className="p-8 rounded-3xl bg-white/[0.03] border border-white/5 space-y-4">
+                      <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-400 mb-2">
+                        <i className="fas fa-code text-xl"></i>
+                      </div>
+                      <h3 className="text-xl font-bold text-white">Open Source</h3>
+                      <p className="text-gray-500 text-sm leading-relaxed">
+                        Ventora AI's code is transparent. You can review how it handles your data and verify its security measures.
+                      </p>
+                    </section>
+
+
+
+
+
+
+
+
+
+                      
+
+
+                      
+
+                    <section className="p-8 rounded-3xl bg-red-500/5 border border-red-500/10 space-y-4">
+                      <div className="w-12 h-12 rounded-2xl bg-red-500/10 flex items-center justify-center text-red-400 mb-2">
+                        <i className="fas fa-exclamation-triangle text-xl"></i>
+                      </div>
+                      <h3 className="text-xl font-bold text-white">Medical Disclaimer</h3>
+                      <p className="text-gray-500 text-sm leading-relaxed">
+                        Ventora AI provides educational information only. It is not a substitute for professional medical advice.
+                      </p>
+                    </section>
+
+
+<section class="mt-20 pt-12 border-t border-white/10">
+  <h2 class="text-2xl font-bold text-white mb-8">Privacy & Security Policy</h2>
+  
+  <p class="text-sm text-gray-500 mb-6 text-center">
+    <strong>Last Updated: December 30, 2025</strong>
+  </p>
+
+  <div class="space-y-8 text-gray-300 leading-relaxed text-lg">
+    <p>
+      At <strong>Ventora AI</strong>, we prioritize your privacy and security. This policy explains how we handle your information in our web-based <strong>Medical Information Assistant (MIA)</strong>, designed for educational purposes.
+    </p>
+
+    <p>
+      <strong>Ventora AI</strong> runs primarily in your browser, keeping most data local on your device. We collect no personal information unless you provide it voluntarily, and we do not require accounts or logins.
+    </p>
+
+    <div class="space-y-4">
+      <h3 class="text-xl font-bold text-white">1. Data Collected and Stored Locally</h3>
+      <ul class="space-y-2 list-disc list-inside text-gray-400 ml-4">
+        <li>All chats, conversation history, settings, attached files, prescriptions, and diet plans are stored exclusively in your browser’s <strong>localStorage</strong> or <strong>IndexedDB</strong>.</li>
+        <li>We do not transmit this data to our servers or any third party.</li>
+        <li>Your information stays on your device and is deleted if you clear browser data or use the “Clear All Data” feature.</li>
+        <li>You control and own your data fully.</li>
+      </ul>
+    </div>
+
+    <div class="space-y-4">
+      <h3 class="text-xl font-bold text-white">2. Data Sent to Third-Party APIs</h3>
+      <p class="text-gray-400">
+        <strong>Ventora AI</strong> sends certain data temporarily to external services for functionality:
+      </p>
+      <ul class="space-y-2 list-disc list-inside text-gray-400 ml-4">
+        <li><strong>Chat Responses:</strong> We forward your queries and conversation context to the Groq API (or similar LLM providers) to generate AI responses. The provider processes the data only for the response and does not store it long-term. (Groq applies zero data retention by default for inference requests.)</li>
+        <li><strong>File Text Extraction (OCR):</strong> When you upload images or PDFs for text extraction, we use the <a href="https://ocr.space/OCRAPI" target="_blank" class="text-blue-400 hover:underline">https://ocr.space/OCRAPI</a>. Uploaded files and extracted text are deleted immediately after processing—the service stores nothing.</li>
+      </ul>
+      <p class="text-gray-400">
+        These transmissions occur only when you initiate the feature; no background data sharing happens. We select providers with strong privacy practices that avoid storing your content.
+      </p>
+    </div>
+
+    <div class="space-y-4">
+      <h3 class="text-xl font-bold text-white">3. No Tracking or Analytics</h3>
+      <ul class="space-y-2 list-disc list-inside text-gray-400 ml-4">
+        <li>We employ no cookies, tracking pixels, or third-party analytics.</li>
+        <li>We log no IP addresses, usage patterns, or personal identifiers.</li>
+        <li>The app functions fully offline-capable except for AI response and OCR features.</li>
+      </ul>
+    </div>
+
+    <div class="space-y-4">
+      <h3 class="text-xl font-bold text-white">4. Security Measures</h3>
+      <ul class="space-y-2 list-disc list-inside text-gray-400 ml-4">
+        <li>All local data stays on your device, protected by your browser’s security.</li>
+        <li>Communications with APIs use HTTPS encryption.</li>
+        <li>As an open-source project (where applicable), community members can review the code for transparency.</li>
+      </ul>
+    </div>
+
+    <div class="space-y-4">
+      <h3 class="text-xl font-bold text-white">5. Children’s Privacy</h3>
+      <p class="text-gray-400">
+        <strong>Ventora AI</strong> does not target children under 13. If you are a parent and believe your child has provided information, contact us to request deletion.
+      </p>
+    </div>
+
+    <div class="space-y-4">
+      <h3 class="text-xl font-bold text-white">6. Medical Disclaimer</h3>
+      <p class="text-gray-400">
+        <strong>Ventora AI</strong> serves as an educational tool only. It does not offer medical advice, diagnoses, treatments, or prescriptions. Always consult qualified healthcare professionals for health concerns. We bear no liability for misuse or reliance on the information provided.
+      </p>
+    </div>
+
+    <div class="space-y-4">
+      <h3 class="text-xl font-bold text-white">7. Changes to This Policy</h3>
+      <p class="text-gray-400">
+        We may update this policy periodically. We will notify significant changes within the app or on our site.
+      </p>
+    </div>
+
+    <div class="space-y-4">
+      <h3 class="text-xl font-bold text-white">8. Contact Us</h3>
+      <p class="text-gray-400">
+        For questions about this policy or your data, email: 
+        <a href="mailto:support@ventora.ai" class="text-blue-400 hover:underline">support@ventora.ai</a>
+      </p>
+    </div>
+
+    <p class="text-center text-gray-500 mt-12 pt-8 border-t border-white/5">
+      Thank you for trusting <strong>Ventora AI</strong>. We are committed to maintaining the highest privacy and security standards.<br><br>
+      <em>Developed by Maulik Sinh Makwana</em>
+    </p>
+  </div>
+</section>
+
+
+                      
+                  </div>
+
+                  <div className="pt-20 text-center">
+                    <button 
+                      onClick={onBack}
+                      className="px-10 py-4 bg-white/5 border border-white/10 hover:bg-white/10 rounded-full font-bold transition-all"
+                    >
+                      Return to Landing Page
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="flex flex-col gap-6">
-                <h4 class="text-xs uppercase tracking-[0.3em] font-bold text-gray-300">Legal & Support</h4>
-                <ul class="space-y-4 text-sm text-gray-500">
-                    <li><button onclick="setView('privacy')" class="hover:text-purple-400 transition-colors text-left">Privacy & Security</button></li>
-                    <li><a href="mailto:support@ventora.ai" class="hover:text-purple-400 transition-colors">Technical Support</a></li>
-                    <li><span class="text-[10px] tracking-widest text-gray-600 uppercase">© 2025 VENTORA LABS</span></li>
-                </ul>
+          );
+        };
+
+        const App = () => {
+          const [view, setView] = React.useState('home');
+
+          React.useEffect(() => {
+            window.scrollTo(0, 0);
+          }, [view]);
+
+          const scrollToSection = (id) => {
+            if (view !== 'home') {
+              setView('home');
+              setTimeout(() => {
+                const element = document.getElementById(id);
+                if (element) element.scrollIntoView({ behavior: 'smooth' });
+              }, 100);
+              return;
+            }
+            const element = document.getElementById(id);
+            if (element) {
+              element.scrollIntoView({ behavior: 'smooth' });
+            }
+          };
+
+          const features = [
+            {
+              icon: "fa-solid fa-pills",
+              title: "Pharma Intelligence",
+              description: "Deep insights into chemical compositions and pharmaceutical classifications."
+            },
+            {
+              icon: "fa-solid fa-dna",
+              title: "Disease Mapping",
+              description: "Understanding complex pathologies and clinical manifestations clearly."
+            },
+            {
+              icon: "fa-solid fa-apple-whole",
+              title: "Nutritional Science",
+              description: "Evidence-based dietary analysis and metabolic interaction studies."
+            },
+            {
+              icon: "fa-solid fa-vial-circle-check",
+              title: "Clinical Accuracy",
+              description: "Verified medical data processed through advanced AI logic for research."
+            }
+          ];
+
+          const privacyFeatures = [
+            {
+              icon: "fas fa-database",
+              title: "Local Storage",
+              description: "All your conversations, settings, and personal data are stored locally in your browser. No data is sent to external servers for storage."
+            },
+            {
+              icon: "fas fa-user-slash",
+              title: "No Account Required",
+              description: "Ventora AI doesn't require you to create an account. Your data stays with you on your device."
+            },
+            {
+              icon: "fas fa-user-secret",
+              title: "No Personal Tracking",
+              description: "We don't track your personal information, browsing history, or usage patterns. Your interactions remain private."
+            },
+            {
+              icon: "fas fa-hand-holding-heart",
+              title: "Data Ownership",
+              description: "You own all your data. You can export your conversations at any time or clear all data with one click."
+            }
+          ];
+
+          if (view === 'privacy') {
+            return (
+              <div className="relative min-h-screen bg-black text-white selection:bg-purple-500/30">
+                <StarBackground />
+                <div className="fixed inset-0 pointer-events-none glow-orb">
+                  <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-blue-600/10 rounded-full blur-[120px]"></div>
+                  <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-purple-600/10 rounded-full blur-[120px]"></div>
+                </div>
+                <Header onNavigate={scrollToSection} />
+                <PrivacyPage onBack={() => setView('home')} />
+                <Footer 
+                  onAboutClick={() => setView('about')} 
+                  onPrivacyClick={() => setView('privacy')} 
+                />
+              </div>
+            );
+          }
+
+          if (view === 'about') {
+            return (
+              <div className="relative min-h-screen bg-black text-white selection:bg-purple-500/30">
+                <StarBackground />
+                <div className="fixed inset-0 pointer-events-none glow-orb">
+                  <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-blue-600/10 rounded-full blur-[120px]"></div>
+                  <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-purple-600/10 rounded-full blur-[120px]"></div>
+                </div>
+                <Header onNavigate={scrollToSection} />
+                <AboutPage onBack={() => setView('home')} />
+                <Footer 
+                  onAboutClick={() => setView('about')} 
+                  onPrivacyClick={() => setView('privacy')} 
+                />
+              </div>
+            );
+          }
+
+          return (
+            <div className="relative min-h-screen flex flex-col items-center selection:bg-purple-500/30 bg-black text-white scroll-smooth">
+              <StarBackground />
+
+              {/* Medium glow orbs */}
+              <div className="fixed inset-0 pointer-events-none glow-orb">
+                <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-blue-600/10 rounded-full blur-[120px]"></div>
+                <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-purple-600/10 rounded-full blur-[120px]"></div>
+              </div>
+
+              <Header onNavigate={scrollToSection} />
+
+              {/* Hero Section */}
+              <main className="relative flex-1 flex flex-col items-center justify-center px-6 pt-40 pb-24 text-center z-10 w-full max-w-6xl">
+                <div className="space-y-6">
+                  <h2 className="text-blue-400 font-semibold tracking-[0.3em] text-xs md:text-sm uppercase">
+                    Future of Medical Knowledge
+                  </h2>
+                  
+                  <h1 className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter leading-tight text-white">
+                    VENTORA <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-blue-400 bg-clip-text text-transparent bg-[length:200%_auto] animate-[gradient_4s_linear_infinite]">AI</span>
+                  </h1>
+
+                  <p className="text-gray-400 text-lg md:text-2xl max-w-3xl mx-auto font-light leading-relaxed">
+                    A specialized Medical Information Assistant bridging the gap between clinical research and everyday health literacy.
+                  </p>
+
+                  <div className="pt-12 flex flex-col items-center gap-8">
+                    <div className="flex flex-col sm:flex-row gap-6 justify-center">
+                      <a
+                        href="https://ventora-ai.vercel.app/"
+                        className="group relative inline-flex items-center justify-center px-12 py-5 font-bold text-white transition-all duration-300 bg-transparent rounded-full hover:scale-105 active:scale-95 overflow-hidden shadow-[0_0_30px_-5px_rgba(59,130,246,0.5)]"
+                      >
+                        <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-600 to-purple-600 opacity-90 group-hover:opacity-100 transition-opacity"></span>
+                        <span className="relative flex items-center gap-3 text-xl">
+                        Try Ventora
+                          <i className="fa-solid fa-arrow-right text-sm transition-transform group-hover:translate-x-1"></i>
+                        </span>
+                      </a>
+                      
+                      <button
+                        onClick={() => scrollToSection('features')}
+                        className="px-12 py-5 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition-all font-semibold flex items-center justify-center gap-2"
+                      >
+                        Explore Features
+                      </button>
+                    </div>
+
+                    <div className="flex flex-wrap justify-center gap-4">
+                       <button 
+                        onClick={() => setView('about')}
+                        className="group flex items-center gap-2 px-6 py-2.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition-all text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white"
+                       >
+                        <i className="fas fa-info-circle"></i>
+                        About Us
+                       </button>
+                       <button 
+                        onClick={() => setView('privacy')}
+                        className="group flex items-center gap-2 px-6 py-2.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition-all text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-white"
+                       >
+                        <i className="fas fa-shield-alt"></i>
+                        Privacy
+                       </button>
+                     </div>
+                  </div>
+                </div>
+              </main>
+
+              {/* Core Capabilities Section */}
+              <section id="features" className="w-full max-w-7xl px-6 py-32 z-10">
+                <div className="text-center mb-20">
+                  <h2 className="text-4xl md:text-5xl font-bold mb-4">Core <span className="text-blue-500">Capabilities</span></h2>
+                  <p className="text-gray-500 text-lg max-w-2xl mx-auto font-light leading-relaxed">
+                    Ventora AI delivers specialized knowledge in pharmaceutical sciences, pathology, and nutrition through an intuitive interface.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                  {features.map((feature, index) => (
+                    <div key={index} className="group p-8 rounded-3xl bg-white/[0.02] border border-white/5 hover:border-blue-500/20 hover:bg-blue-500/5 transition-all duration-500">
+                      <div className="w-16 h-16 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-400 mb-6 group-hover:bg-blue-500/20 transition-colors">
+                        <i className={feature.icon + " text-2xl"}></i>
+                      </div>
+                      <h3 className="text-xl font-bold mb-3 text-white group-hover:text-blue-300 transition-colors">{feature.title}</h3>
+                      <p className="text-gray-500 text-sm leading-relaxed">{feature.description}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              {/* Privacy First Section - Now with same hover animation as Core Capabilities */}
+              <section className="w-full max-w-7xl px-6 py-32 z-10 border-t border-white/5">
+                <div className="text-center mb-20">
+                  <h2 className="text-4xl md:text-5xl font-bold mb-4">Privacy <span className="text-purple-500">First</span></h2>
+                  <p className="text-gray-500 text-lg max-w-2xl mx-auto font-light leading-relaxed">
+                    Designed with your data security in mind, Ventora AI ensures complete privacy without compromises.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {privacyFeatures.map((feature, index) => (
+                    <div key={index} className="group p-8 rounded-3xl bg-white/[0.02] border border-white/5 hover:border-purple-500/20 hover:bg-purple-500/5 transition-all duration-500">
+                      <div className="w-16 h-16 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400 mb-6 group-hover:bg-purple-500/20 transition-colors">
+                        <i className={feature.icon + " text-2xl"}></i>
+                      </div>
+                      <h3 className="text-xl font-bold mb-3 text-white group-hover:text-purple-300 transition-colors">{feature.title}</h3>
+                      <p className="text-gray-500 text-sm leading-relaxed">{feature.description}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="text-center pt-20">
+                  <button 
+                    onClick={() => setView('privacy')}
+                    className="px-12 py-4 rounded-full bg-purple-500/10 border border-purple-500/20 hover:bg-purple-500/20 text-purple-400 font-bold transition-all uppercase tracking-widest text-xs"
+                  >
+                    Read Full Privacy Policy
+                  </button>
+                </div>
+              </section>
+
+              {/* About Summary Section */}
+              <section id="about" className="relative z-10 w-full max-w-7xl px-6 py-32 border-t border-white/5">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+                  <div className="space-y-8">
+                    <h2 className="text-4xl md:text-5xl font-bold leading-tight text-white">
+                      Crafted for Clarity, <br />
+                      <span className="text-blue-500">Built for Science.</span>
+                    </h2>
+                    <p className="text-gray-400 text-lg leading-relaxed">
+                      Ventora AI is more than just a chatbot. It's a sophisticated repository of pharmaceutical knowledge designed to provide instant clarity on complex health topics. 
+                      Whether you're a student, researcher, or curious individual, Ventora empowers you with data-driven insights.
+                    </p>
+                    
+                    <div className="grid grid-cols-2 gap-8 pt-4">
+                      <div className="space-y-2">
+                        <div className="text-3xl font-bold text-white">V5.4</div>
+                        <div className="text-gray-500 text-sm uppercase tracking-widest font-bold">Current Version</div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="text-3xl font-bold text-white">MIA</div>
+                        <div className="text-gray-500 text-sm uppercase tracking-widest font-bold">Assistant Class</div>
+                      </div>
+                    </div>
+
+                    <p className="text-sm text-gray-500 border-l-2 border-blue-500/50 pl-4 italic">
+                      "Our mission is to democratize pharmaceutical information through an interface that feels both powerful and human."
+                    </p>
+                    
+                    <button 
+                      onClick={() => setView('about')}
+                      className="mt-4 px-8 py-3 bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20 text-blue-400 rounded-full font-bold transition-all text-sm uppercase tracking-widest"
+                    >
+                      Learn More About Us
+                    </button>
+                  </div>
+
+                  <div className="relative group">
+                    <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+                    <div className="relative bg-[#0a0a0a] border border-white/10 rounded-2xl p-10 overflow-hidden">
+                       <div className="flex flex-col gap-6">
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
+                              <i className="fas fa-microchip"></i>
+                            </div>
+                            <div>
+                              <h4 className="font-bold text-white">Neural Medical Core</h4>
+                              <p className="text-xs text-gray-500">Custom LLM parameters for healthcare accuracy.</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400">
+                              <i className="fas fa-shield-heart"></i>
+                            </div>
+                            <div>
+                              <h4 className="font-bold text-white">Ethics-First Logic</h4>
+                              <p className="text-xs text-gray-500">Strict safety guardrails and medical disclaimers.</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
+                              <i className="fas fa-bolt"></i>
+                            </div>
+                            <div>
+                              <h4 className="font-bold text-white">Zero Latency Sync</h4>
+                              <p className="text-xs text-gray-500">Real-time data fetching for up-to-date research.</p>
+                            </div>
+                          </div>
+                       </div>
+                       
+                       <div className="absolute top-0 right-0 p-8 opacity-10">
+                         <i className="fa-solid fa-staff-snake text-9xl text-white"></i>
+                       </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <Footer 
+                onAboutClick={() => setView('about')} 
+                onPrivacyClick={() => setView('privacy')} 
+              />
             </div>
-        </div>
-        <div class="mt-20 pt-8 border-t border-white/5 text-center">
-            <p class="text-[10px] tracking-[0.5em] uppercase text-gray-700 font-bold">
-                Developed by Maulik Sinh Makwana
-            </p>
-        </div>
-    </footer>
+          );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+    <style>
+        @keyframes gradient {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        @keyframes fade-in {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes slide-in-from-right {
+          from { transform: translateX(100px); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+        .animate-in {
+          animation: fade-in 0.7s ease-out forwards, slide-in-from-right 0.7s ease-out forwards;
+        }
+        #root {
+          scroll-behavior: smooth;
+        }
+    </style>
 </body>
 </html>
